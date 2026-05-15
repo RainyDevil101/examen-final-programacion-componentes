@@ -1,5 +1,5 @@
 {
-  "name": "ejercicio-1",
+  "name": "proyecto-final",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "firebase": "^12.13.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.15.0",
+    "simple-react-validator": "^1.6.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
