@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:cordova": "tsc -b && VITE_CORDOVA=1 vite build --outDir cordova/www --emptyOutDir",
     "lint": "eslint .",
     "preview": "vite preview"
   },

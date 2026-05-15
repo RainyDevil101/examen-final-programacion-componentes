@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="cl.proc0923.proyectofinal" version="1.0.0"
+        xmlns="http://www.w3.org/ns/widgets"
+        xmlns:cdv="http://cordova.apache.org/ns/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>Tienda React</name>
+    <description>Proyecto final PROC0923 — tienda + registro + auth.</description>
+    <author email="aheca96@gmail.com">Alexis Herrera</author>
+
+    <content src="index.html" />
+
+    <!-- Whitelist: dominios a los que el WebView puede ir/cargar recursos -->
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+
+    <!-- Firebase necesita navegar/redirigir a estos hosts -->
+    <allow-navigation href="https://*.firebaseapp.com/*" />
+    <allow-navigation href="https://*.firebaseio.com/*" />
+    <allow-navigation href="https://*.googleapis.com/*" />
+    <allow-navigation href="https://*.google.com/*" />
+    <allow-navigation href="https://*.gstatic.com/*" />
+
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="android-minSdkVersion" value="24" />
+    <preference name="android-targetSdkVersion" value="34" />
+    <preference name="AndroidInsecureFileModeEnabled" value="true" />
+    <preference name="MixedContentMode" value="0" />
+
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
+    </platform>
+
+    <plugin name="cordova-plugin-statusbar" spec="^4.0.0" />
+
+    <engine name="android" spec="^13.0.0" />
+</widget>

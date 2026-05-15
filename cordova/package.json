@@ -1,0 +1,25 @@
+{
+  "name": "proyecto-final-cordova",
+  "displayName": "Tienda React",
+  "version": "1.0.0",
+  "description": "Wrapper Cordova del proyecto final PROC0923.",
+  "main": "index.js",
+  "scripts": {
+    "android": "cordova run android",
+    "build:debug": "cordova build android",
+    "build:release": "cordova build android --release",
+    "platform:add": "cordova platform add android",
+    "prepare": "cordova prepare"
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ],
+    "plugins": {
+      "cordova-plugin-statusbar": {}
+    }
+  },
+  "devDependencies": {
+    "cordova-android": "^13.0.0"
+  }
+}

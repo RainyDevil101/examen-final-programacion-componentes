@@ -1,0 +1,12 @@
+node_modules/
+platforms/
+plugins/
+www/
+build/
+*.keystore
+*.jks
+release-signing.properties
+build.json
+*.apk
+*.apks
+app-release-apk/

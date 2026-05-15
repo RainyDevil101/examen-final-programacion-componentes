@@ -1,7 +1,7 @@
 import { Component, type ChangeEvent, type SyntheticEvent } from 'react'
 import SimpleReactValidator from 'simple-react-validator'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
-import { db } from '../firebase'
+import { auth, db } from '../firebase'
 
 interface FormState {
   nombre: string
@@ -103,12 +103,15 @@ class FormularioRegistro extends Component<
 
     try {
       const { nombre, email, telefono, edad, mensaje } = this.state
+      const usuario = auth.currentUser
       await addDoc(collection(db, 'registros'), {
         nombre,
         email,
         telefono,
         edad: Number(edad),
         mensaje,
+        uid: usuario?.uid ?? null,
+        emailUsuario: usuario?.email ?? null,
         creadoEn: serverTimestamp(),
       })
 

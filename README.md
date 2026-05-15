@@ -1,62 +1,67 @@
-# Proyecto Final — PROC0923 Programación de Componentes
+# Proyecto Final - Programación de Componentes
 
-Aplicación web única que cubre los tres ejercicios del examen, construida sobre **React 19 + TypeScript + Vite** con componentes de clase, **Bootstrap 5**, **react-router-dom**, **simple-react-validator** y **Firebase (Firestore)**.
+Aplicación web + Android que cubre los tres ejercicios del examen
+**Stack**: React 19 + TypeScript + Vite, componentes de clase, Bootstrap 5, react-router-dom, simple-react-validator, Firebase (Firestore + Auth + Storage), Cordova
+
+## Para el evaluador
+
+La entrega incluye **dos artefactos**:
+
+1. **Código fuente** (este repo / ZIP). Se levanta con:
+   ```bash
+   pnpm install
+   pnpm dev
+   ```
+   Abrir http://localhost:5173. Las credenciales de Firebase ya están preconfiguradas para la app móvil, para la web sin reconfigurar Firebase, ver "Notas" al final.
+
+2. **APK Android** (`proyecto-final.apk`, adjunto). Instalación en dispositivo:
+   ```bash
+   adb install proyecto-final.apk
+   ```
+   No requiere recompilar nada. Para reconstruirlo desde cero, ver `cordova/README.md`
 
 ## Rutas
 
-| Ruta         | Componente              | Ejercicio | Descripción                                            |
-| ------------ | ----------------------- | --------- | ------------------------------------------------------ |
-| `/`          | `Padre` + `Hijo`        | 1         | Tienda con lista de productos y carrito                |
-| `/registro`  | `FormularioRegistro`    | 2         | Formulario validado que persiste en Cloud Firestore    |
-
+| Ruta        | Componente             | Protegida | Ejercicio |
+| ----------- | ---------------------- | --------- | --------- |
+| `/`         | `Padre` + `Hijo`       | No        | 1         |
+| `/login`    | `Login`                | No        | 3         |
+| `/registro` | `FormularioRegistro`   | Sí        | 2         |
+| `/perfil`   | `Perfil`               | Sí        | 3         |
 
 ## Cumplimiento del enunciado
 
-### Ejercicio 1 — Componentes y comunicación
+### Ej. 1 - Componentes Padre/Hijo
+- `Padre.tsx` mantiene `productos` y `carrito` en `this.state`; usa `this.setState(...)` para actualizar
+- `Hijo.tsx` recibe `producto` y callback `onAgregar` por props
+- Comunicación bidireccional vía props + callback. Listado con `map()`
 
-- Proyecto React creado con Vite
-- **Padre** (`Padre.tsx`) mantiene la lista de productos y el estado del carrito en `this.state`
-- **Hijo** (`Hijo.tsx`) renderiza la tarjeta del producto y un botón
-- `map()` para listar productos
-- Comunicación **padre → hijo** vía props (`producto`, `onAgregar`)
-- Comunicación **hijo → padre** vía callback `onAgregar`
-- Actualización del carrito con `this.setState({...})`
+### Ej. 2 - Formulario + Firestore
+- `FormularioRegistro.tsx` validado con `simple-react-validator` (locale `es`, mensajes personalizados, validador custom de teléfono, `showMessageFor` en `onBlur`)
+- Persistencia con `addDoc(collection(db, 'registros'), …)` + `serverTimestamp()`
 
-### Ejercicio 2 — Formulario + Firestore
+### Ej. 3 - Bootstrap + Auth + Storage + APK
+- **Bootstrap 5** en navbar, cards, formularios y alerts
+- **Firebase Auth** (email + contraseña): `AuthProvider` (clase) escucha `onAuthStateChanged` y expone el usuario vía Context. `Login.tsx` permite iniciar sesión y crear cuenta. `RutaProtegida.tsx` protege `/registro` y `/perfil`
+- **Firebase Storage**: `Perfil.tsx` sube el avatar a `avatars/{uid}.{ext}` y guarda la URL en `usuarios/{uid}` (Firestore) y en `auth.currentUser.photoURL` (`updateProfile`)
+- **Cordova/APK**: build de Vite con `base: './'` + `HashRouter` cuando `VITE_CORDOVA=1`; wrapper en `cordova/` con `config.xml`. Instrucciones completas en [`cordova/README.md`](./cordova/README.md)
 
-- Formulario en React (`FormularioRegistro.tsx`)
-- `simple-react-validator` configurado en español, con `autoForceUpdate`, mensajes personalizados, validador **custom** para teléfono y `showMessageFor` en `onBlur`
-- Conexión a **Firebase** (`initializeApp`) usando variables de entorno
-- Persistencia en **Firestore** vía `addDoc(collection(db, 'registros'), { ... })` con `serverTimestamp`
-
-### Ejercicio 3 — Pendiente
-
-- Estilizar con Bootstrap → ya aplicado en Ej.1 y Ej.2
-- Firebase Auth + Firebase Storage → por implementar
-- Empaquetado APK con Cordova → por implementar
-
-## Configuración de Firebase
-
-1. Crea un proyecto en [Firebase Console](https://console.firebase.google.com/).
-2. Habilita **Cloud Firestore** (modo prueba para desarrollo).
-3. *Configuración del proyecto* → *Tus apps* → añade una **app web** y copia el objeto `firebaseConfig`.
-4. Copia los valores en `.env` (usa `.env.example` como plantilla):
-
-   ```env
-   VITE_FIREBASE_API_KEY=...
-   VITE_FIREBASE_AUTH_DOMAIN=...
-   VITE_FIREBASE_PROJECT_ID=...
-   VITE_FIREBASE_STORAGE_BUCKET=...
-   VITE_FIREBASE_MESSAGING_SENDER_ID=...
-   VITE_FIREBASE_APP_ID=...
-   ```
-
-## Cómo ejecutar
+## Scripts
 
 ```bash
 pnpm install
-cp .env.example .env  # y completar con tus credenciales
 pnpm dev
+pnpm build
+pnpm build:cordova
 ```
 
-Abrir http://localhost:5173
+## Notas
+
+- **Variables de Firebase**: `.env.example` lista las 6 variables `VITE_FIREBASE_*`. Para correr la web hace falta un proyecto Firebase con Firestore, Authentication (Email/Password) y Storage habilitados. El APK ya las trae compiladas en el bundle
+- **Reglas de Storage sugeridas** (cada usuario sólo escribe su avatar):
+  ```
+  match /avatars/{userId}.{ext} {
+    allow read: if true;
+    allow write: if request.auth != null && request.auth.uid == userId;
+  }
+  ```
