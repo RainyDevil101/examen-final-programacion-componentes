@@ -9,22 +9,6 @@ Aplicación web única que cubre los tres ejercicios del examen, construida sobr
 | `/`          | `Padre` + `Hijo`        | 1         | Tienda con lista de productos y carrito                |
 | `/registro`  | `FormularioRegistro`    | 2         | Formulario validado que persiste en Cloud Firestore    |
 
-## Estructura
-
-```
-src/
-├── components/
-│   ├── Layout.tsx                   # Navbar Bootstrap + <Outlet />
-│   ├── Padre.tsx                    # [Ej.1] Lista de productos + carrito (this.state)
-│   ├── Hijo.tsx                     # [Ej.1] Card de producto + botón
-│   └── FormularioRegistro.tsx       # [Ej.2] Form con validator y Firestore
-├── types/
-│   └── simple-react-validator.d.ts  # Tipos locales (la lib no trae oficiales)
-├── types.ts                         # Tipos del dominio (Producto, ItemCarrito)
-├── firebase.ts                      # initializeApp + getFirestore (lee VITE_FIREBASE_*)
-├── App.tsx                          # BrowserRouter + Routes
-└── main.tsx                         # Entry + import de Bootstrap
-```
 
 ## Cumplimiento del enunciado
 
@@ -67,21 +51,6 @@ src/
    VITE_FIREBASE_APP_ID=...
    ```
 
-5. Reglas mínimas de Firestore:
-
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /registros/{doc} {
-         allow create: if true;
-       }
-     }
-   }
-   ```
-
-   > Cuando se implemente Firebase Auth (Ej.3) se restringirá esto a usuarios autenticados.
-
 ## Cómo ejecutar
 
 ```bash
@@ -91,33 +60,3 @@ pnpm dev
 ```
 
 Abrir http://localhost:5173
-
-### Scripts
-
-```bash
-pnpm build     # tsc + vite build
-pnpm preview   # servir el build
-pnpm lint      # ESLint
-```
-
-## Validaciones del formulario
-
-| Campo    | Reglas                                                                       |
-| -------- | ---------------------------------------------------------------------------- |
-| nombre   | required, min 3, max 60 caracteres                                           |
-| email    | required, email                                                              |
-| telefono | required, validador custom (8–15 dígitos, acepta `+`, espacios, `-`, `(`, `)`, `.`) |
-| edad     | required, numeric, 18 ≤ n ≤ 120                                              |
-| mensaje  | required, min 10, max 500 caracteres                                         |
-
-> El validador `phone` por defecto exige formato US (10 dígitos agrupados); por eso se reemplaza por uno custom que acepta números chilenos como `97731726` o `+56 9 7773 1726`.
-
-## Stack
-
-- React 19 + TypeScript (componentes de clase)
-- Vite
-- Bootstrap 5
-- react-router-dom 7
-- simple-react-validator
-- Firebase 12 (Firestore)
-- pnpm
